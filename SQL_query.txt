@@ -1,0 +1,13 @@
+SELECT
+ app_name,
+ AVG(levels_count) AS avg_levels_first_day
+FROM (
+ SELECT
+ i.app_name,
+ COUNT(l.level) AS levels_count
+ FROM Installs i
+ LEFT JOIN Levels l ON i.id = l.user_id AND l.event_time <= i.install_time + INTERVAL '1 day'
+ GROUP BY i.app_name, i.id
+) AS subquery
+GROUP BY app_name
+ORDER BY avg_levels_first_day DESC;
